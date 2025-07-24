@@ -1,18 +1,22 @@
 from typing import Union
 
 
+# Edge (or link) in a graph is a connection between two nodes.
 class Edge:
     def __init__(self, from_node: int, to_node: int, weight: float):
-        self.from_node = from_node
-        self.to_node = to_node
-        self.weight = weight
+        self.from_node = from_node  # Index of the node where the edge starts
+        self.to_node = to_node  # Index of the node where the edge ends
+        self.weight = (
+            weight  # Weight of the edge, can be used to represent distance or cost
+        )
 
 
+# Node in a graph is an entity that can have edges to other nodes.
 class Node:
     def __init__(self, index: int, label=None):
-        self.index = index
-        self.edges = {}
-        self.label = label
+        self.index = index  # Index of the node in the graph
+        self.edges = {}  # Dictionary to hold edges, where key is the neighbor node index and value is the Edge object
+        self.label = label  # Optional label for the node, can be used for identification or categorization
 
     def num_edges(self) -> int:
         return len(self.edges)
@@ -32,8 +36,7 @@ class Node:
 
     def get_sorted_edges_list(self) -> list:
         result = []
-        neighbors = (list)(self.edges.keys())
-        neighbors.sort()
+        neighbors = sorted(self.edges.keys())
 
         for n in neighbors:
             result.append(self.edges[n])
@@ -41,11 +44,12 @@ class Node:
         return result
 
 
+# Graph is a collection of nodes and edges that connect them.
 class Graph:
     def __init__(self, num_nodes: int, undirected: bool = False):
-        self.num_nodes = num_nodes
-        self.undirected = undirected
-        self.nodes = [Node(j) for j in range(num_nodes)]
+        self.num_nodes = num_nodes  # Total number of nodes in the graph
+        self.undirected = undirected  # Indicate the graph is undirected or directed
+        self.nodes = [Node(j) for j in range(num_nodes)]  # Initialize nodes
 
     def get_edge(self, from_node: int, to_node: int) -> Union[Edge, None]:
         if from_node < 0 or from_node >= self.num_nodes:
