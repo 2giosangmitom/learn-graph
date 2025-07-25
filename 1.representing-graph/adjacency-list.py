@@ -105,3 +105,23 @@ for node in g.nodes:
         to_nodes.append(edge)
     result.append(to_nodes)
 print(result)
+
+
+def make_graph_copy(g: Graph) -> Graph:
+    res = Graph(g.num_nodes, g.undirected)
+    for node in g.nodes:
+        res.nodes[node.index].label = node.label
+        for edge in node.edges.values():
+            res.insert_edge(edge.from_node, edge.to_node, edge.weight)
+    return res
+
+
+# Cloned graph
+g2 = make_graph_copy(g)
+result = []
+for node in g2.nodes:
+    to_nodes = []
+    for edge in node.edges.keys():
+        to_nodes.append(edge)
+    result.append(to_nodes)
+print(result)
