@@ -58,6 +58,32 @@ class Graph:
             return 0.0
         return count / total_possible
 
+    # There are two types of neighborhood sub-graph
+    # Open sub-graph of node v is a graph of all node v's neighbors
+    # Closed sub-graph of node v is a graph of all node v's neighbors and node v
+    def make_neighborhood_subgraph(self, index: int, closed: bool):
+        if not self.undirected:
+            raise ValueError
+
+        nodes_to_use = self.get_neighbors(index)
+        if closed:
+            nodes_to_use.add(index)
+
+        # Sub-graph should use other indexes
+        index_map = {}
+        for new_index, old_index in enumerate(nodes_to_use):
+            index_map[old_index] = new_index
+
+        g_new = Graph(len(nodes_to_use), True)
+        for n in nodes_to_use:
+            for edge in self.nodes[n].get_edge_list():
+                if edge.to_node in nodes_to_use and edge.to_node > n:
+                    ind1_new = index_map[n]
+                    ind2_new = index_map[edge.to_node]
+                    g_new.insert_edge(ind1_new, ind2_new, edge.weight)
+
+        return g_new
+
 
 g = Graph(6, True)  # 0 -> 5
 g.insert_edge(0, 3, 1.0)
@@ -83,3 +109,22 @@ g2.insert_edge(1, 2, 1.0)
 print(
     f"Clustering coefficient of node 0: {format(g2.clustering_coefficient(0), '.2f')}"
 )
+
+g3 = Graph(7, True)
+g3.insert_edge(0, 4, 1.0)
+g3.insert_edge(0, 1, 1.0)
+g3.insert_edge(1, 5, 1.0)
+g3.insert_edge(1, 6, 1.0)
+g3.insert_edge(1, 2, 1.0)
+g3.insert_edge(2, 3, 1.0)
+g3.insert_edge(5, 6, 1.0)
+
+# Print graph
+for node in range(g3.num_nodes):
+    print(f"{node}: {list(g3.nodes[node].edges.keys())}")
+
+# Print sub-graph of 1
+print("Sub-graph of node 1")
+sub_graph = g3.make_neighborhood_subgraph(1, True)
+for node in range(sub_graph.num_nodes):
+    print(f"{node}: {list(sub_graph.nodes[node].edges.keys())}")
