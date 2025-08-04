@@ -121,3 +121,34 @@ def check_node_valid_edge(g: Graph, path: List[Edge]) -> bool:
 
 edges = [g.nodes[0].edges[1], g.nodes[1].edges[2]]
 print(check_node_valid_edge(g, edges))  # True
+
+
+# List of previous nodes
+def check_last_path_valid(g: Graph, last: List[int]) -> bool:
+    if len(last) != g.num_nodes:
+        return False
+    for to_node, from_node in enumerate(last):
+        if from_node != -1 and not g.is_edge(from_node, to_node):
+            return False
+    return True
+
+
+prev_node_lists = [-1, 0, 1, 2]
+print(check_last_path_valid(g, prev_node_lists))  # True
+
+
+# Translate a previous-node list into a list of nodes
+def make_node_path_from_last(last: List[int], dest: int) -> List[int]:
+    reversed_path = []
+    current = dest
+
+    while current != -1:
+        reversed_path.append(current)
+        current = last[current]
+
+    path = list(reversed(reversed_path))
+    return path
+
+
+print(make_node_path_from_last([-1, 0, 1, 2, 2, 0, 5, 0, 5, 8], 4))
+print(make_node_path_from_last([-1, 0, 4, 1, 0], 2))
