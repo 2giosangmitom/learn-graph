@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 
 # A path through a graph is a sequence of nodes that are connected by edges.
 # Paths have directionality, even on undirected graph.
@@ -15,7 +15,7 @@ class Edge:
 class Node:
     def __init__(self, index: int):
         self.index = index
-        self.edges = {}
+        self.edges: Dict[int, Edge] = {}
 
     def add_edge(self, to_node: int, weight: float):
         self.edges[to_node] = Edge(self.index, to_node, weight)
@@ -152,3 +152,30 @@ def make_node_path_from_last(last: List[int], dest: int) -> List[int]:
 
 print(make_node_path_from_last([-1, 0, 1, 2, 2, 0, 5, 0, 5, 8], 4))
 print(make_node_path_from_last([-1, 0, 4, 1, 0], 2))
+
+graph = Graph(4)
+graph.insert_edge(0, 1, 4.0)
+graph.insert_edge(0, 2, 2.0)
+graph.insert_edge(1, 3, 2.0)
+graph.insert_edge(2, 3, 2.0)
+
+path1 = [-1, -1, 0, 2]
+path2 = [-1, 0, -1, 1]
+
+
+def calculate_cost(g: Graph, last: List[int]):
+    if not check_last_path_valid(g, last):
+        raise BaseException("Oi doi oi")
+
+    cost = 0.0
+
+    for curr, prev in enumerate(last):
+        if prev == -1:
+            continue
+        cost += g.nodes[prev].edges[curr].weight
+
+    return cost
+
+
+print(calculate_cost(graph, path1))  # 4.0
+print(calculate_cost(graph, path2))  # 6.0
